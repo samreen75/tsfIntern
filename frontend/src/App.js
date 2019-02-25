@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
-
-const baseURL = "localhost:8080/"
 
 class App extends Component {
   constructor(props){
@@ -25,7 +22,7 @@ class App extends Component {
   getAllStudents(){
     const config = {
       method: "get",
-      url:  baseURL+"tsfstudent",
+      url:  "http://localhost:8081/studentrecord",
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*"
@@ -34,7 +31,7 @@ class App extends Component {
     axios.request(config).then(function(response){
       console.log(response);
       let { studentList } = this.state;
-      studentList = response;
+      studentList = response.data;
       this.setState({
         studentList: studentList
       })
@@ -44,13 +41,14 @@ class App extends Component {
     })
   }
 
-  submitStudent(){
+  submitStudent(e){
+    e.preventDefault();
     let requestData = this.state.Name;
     let requestObject = { name: requestData }
     const config={
       method: "post",
       data: requestObject,
-      url: baseURL+"addtsfstudent",
+      url: "/addstudent",
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*"
@@ -58,7 +56,7 @@ class App extends Component {
     }
     axios.request(config).then(function(response){
       let {studentList} = this.state;
-      studentList.push(response[0]);
+      studentList.push(response.data);
       this.setState({
         studentList : studentList
       })
@@ -77,7 +75,7 @@ class App extends Component {
       <div>
         <div name="input form">
           <form onSubmit={this.submitStudent}>
-            <input name="Name" placeholder="Enter your name" value={this.state.Name} onChange={this.onChange}></input>
+            <input name="Name" placeholder="Enter your name" value={this.state.Name} onChange={this.onChange} />
             <button type="submit" >submit</button>
           </form>
         </div>
